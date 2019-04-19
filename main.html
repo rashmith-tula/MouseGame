@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mouse Puzzle</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+	<style type="text/css">
+		input {
+			width: 3%;
+			height: 3%;
+			margin: 0;
+			text-align: center;
+		}
+		#initial {
+		  background-image: url("https://encrypted-tbn0.gstatic.com/ images?q=tbn:ANd9GcQtkX_WTRCmSvF1IZKnkg4LNczEGG7DrS4ociXjr-G4nQaKC11U");
+          background-repeat: no-repeat;
+          background-position: right center;
+          background-size: 20px;
+		}
+	</style>
+	<script type="text/javascript">
+		function mousePuzzle() {
+		  var grid = prompt("Setup your grid");
+          grid = JSON.parse(grid);
+		  var row = grid.length - 1;
+		  var col = grid[0].length - 1;
+		  var result = [];
+		  let answer = false;
+
+		  if(grid[0][0] == 0) {
+			alert("Wall in the initial mouse position");
+			var bool = mousePuzzle();
+			return bool;
+		   }
+
+           debugger;
+
+		   for(let i = 0; i <= row; i++) {
+		   	for(let j = 0; j <= col; j++) {
+		   		if(grid[i][j] == 9) {
+                  let target = i + '.' + j;
+                  result.push(target);
+                  break;
+		   		}
+		   	}
+		   	if(result.length > 0) { break; }
+		  }
+
+		  debugger;
+
+		  for(let i = 0; i < result.length; i++) {
+		  	let x = result[i], x1, y1;
+		  	x = x.split('.');
+		  	y = +x[1];
+		  	x = +x[0];
+            
+            x1 = x - 1;
+            y1 = y;
+            if(x1 <= row && y1 <= col) {
+            	if(x1 == 0 && y1 == 0) {
+                    answer = true;
+                    break;
+            	}
+            	if(grid[x1][y1] == 1) {
+                  let target = x1 + '.' + y1;
+                  result.push(target);
+            	}
+            }
+
+            x1 = x;
+            y1 = y - 1;
+            if(x1 <= row && y1 <= col) {
+            	if(x1 == 0 && y1 == 0) {
+                    answer = true;
+                    break;
+            	}
+            	if(grid[x1][y1] == 1) {
+                  let target = x1 + '.' + y1;
+                  result.push(target);
+            	}
+            }
+
+            x1 = x + 1;
+            y1 = y;
+            if(x1 <= row && y1 <= col) {
+                if(x1 == 0 && y1 == 0) {
+                    answer = true;
+                    break;
+            	}	
+            	if(grid[x1][y1] == 1) {
+                  let target = x1 + '.' + y1;
+                  result.push(target);
+            	}
+            }
+
+            x1 = x;
+            y1 = y + 1;
+            if(x1 <= row && y1 <= col) {
+            	if(grid[x1][y1] == 1) {
+            	  if(x1 == 0 && y1 == 0) {
+                    answer = true;
+                    break;
+            	  }	
+                  let target = x1 + '.' + y1;
+                  result.push(target);
+            	}
+            }
+		  }
+
+		  return answer;
+		
+		}
+		
+		// var answer = mousePuzzle();
+		// console.log(answer);
+
+		function addColumn() {
+          var rows = document.querySelectorAll('.row');
+          rows.forEach(function(row, index) {
+            let lastNode = row.lastElementChild;
+            let childCopy = lastNode.cloneNode();
+            let name = lastNode.getAttribute("name");
+            name = name.slice(1).split("|");
+            let cnum = +name[1] + 1;
+            cnum = 'r' + name[0] + '|' + cnum;
+            childCopy.setAttribute("name", cnum);
+            row.appendChild(childCopy);
+          })
+		}
+
+		function addRow() {
+		  let container = document.querySelector('.container');
+		  let lastDiv = document.querySelectorAll('.row');
+		  let len = lastDiv.length - 1;
+		  lastDiv = lastDiv[len];
+		  let newDiv = lastDiv.cloneNode();
+		  container.appendChild(newDiv);
+		  let fields = document.querySelectorAll(".row")[len].children;
+
+		  for(let i = 0; i < fields.length; i++) {
+		  	let newField = fields[i].cloneNode();
+		  	let name = fields[i].getAttribute("name");
+            name = name.slice(1).split("|");
+            let cnum = +name[0] + 1;
+            cnum = 'r' + cnum + '|' + name[1];
+            newField.setAttribute("name", cnum);
+            newDiv.appendChild(newField);
+		  }
+
+		}
+
+		function validate(event) {
+			if(event.key != "1" && event.key != "0" && event.key != "9") {
+               event.returnValue = false;	
+			}
+			if(event.target.value.length > 0) {
+				event.returnValue = false;
+			}
+		}
+
+	</script>
+</head>
+<body>
+  <h1 class="text-success text-center">Mouse Puzzle</h1>
+  <div class="container mt-2 text-center" onkeypress="validate(event)">
+  	 <button class="btn btn-sm btn-primary" onclick="addRow()">Add Row</button>
+  	 <button class="btn btn-sm btn-secondary" onclick="addColumn()">Add Column</button>
+
+  
+  	<div class="row mt-4 d-flex justify-content-center">
+  	 <input type="text" id="initial" name="r0|0" required disabled>
+  	 <input type="text" name="r0|1" required>
+  	 <input type="text" name="r0|2" required>
+  	</div>
+  	<div class="row d-flex justify-content-center">
+  	 <input type="text" name="r1|0" required>
+  	 <input type="text" name="r1|1" required>
+  	 <input type="text" name="r1|2" required>
+  	</div>
+  </div>
+  <div class="container mt-4 text-center">
+  	<button class="btn btn-sm btn-success"> Submit </button>
+  </div>
+ 
+
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
